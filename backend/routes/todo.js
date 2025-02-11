@@ -1,34 +1,60 @@
-const express=require('express');
-const zod=require('zod');
-const router=express.Router();
-const authenticateUser=require('./../middleware/auth');
-const jwt=require('jsonwebtoken');
+const express = require('express');
+const zod = require('zod');
+const router = express.Router();
+const authenticateUser = require('./../middleware/auth');
+const jwt = require('jsonwebtoken');
 const { PrismaClient } = require('@prisma/client');
-const prisma=new PrismaClient();
+const prisma = new PrismaClient();
+const multer = require('multer'); // For handling file uploads
 
-const todoSchema = zod.object({
-    title: zod.string().min(3, "Title must be at least 3 characters"),
-    description:zod.string(),
-    completed: zod.boolean().optional()
+// Configure Multer for file uploads
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/'); // Save files in the "uploads" directory
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-' + file.originalname); // Unique filename
+    },
 });
 
+const upload = multer({ storage });
 
-router.post('/todos', authenticateUser, async (req, res) => {
+// Zod schema for todo validation
+const todoSchema = zod.object({
+    title: zod.string().min(3, "Title must be at least 3 characters"),
+    description: zod.string(),
+    completed: zod.boolean().optional(),
+});
+
+// Create a new todo with file uploads
+router.post('/todos', authenticateUser, upload.array('files'), async (req, res) => {
     const body = req.body;
-    const validation = todoSchema.safeParse(body);
+    const files = req.files; // Array of uploaded files
 
+    // Validate the todo input
+    const validation = todoSchema.safeParse(body);
     if (!validation.success) {
         return res.status(400).json({ msg: "Invalid Inputs", errors: validation.error.errors });
     }
 
     try {
+        // Create the todo
         const newTodo = await prisma.todo.create({
             data: {
                 title: body.title,
-                description:body.description,
+                description: body.description,
                 completed: body.completed || false,
-                userId: req.userId 
-            }
+                userId: req.userId,
+                files: {
+                    create: files.map((file) => ({
+                        filename: file.originalname,
+                        path: file.path, // Path to the uploaded file
+                    })),
+                },
+            },
+            include: {
+                files: true, // Include the associated files in the response
+            },
         });
 
         return res.status(201).json({ msg: "Todo created successfully", todo: newTodo });
@@ -37,7 +63,6 @@ router.post('/todos', authenticateUser, async (req, res) => {
         return res.status(500).json({ msg: "Internal server error" });
     }
 });
-
 
 router.get('/todos', authenticateUser, async (req, res) => {
     try {

@@ -30,8 +30,20 @@ model Todo {
   completed   Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now())
-  reminder    Boolean @default(false)
-  userId      Int      
+  reminder    Boolean  @default(false)
+  userId      Int
   user        User     @relation(fields: [userId], references: [id])
-  @@schema("todo_app") 
+  files       File[]   // One-to-many relationship with File model
+  @@schema("todo_app")
+}
+
+model File {
+  id        Int      @id @default(autoincrement())
+  filename  String   
+  path      String   
+  todoId    Int      
+  todo      Todo     @relation(fields: [todoId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  @@schema("todo_app")
 }
