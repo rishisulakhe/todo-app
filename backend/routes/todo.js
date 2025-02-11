@@ -42,7 +42,8 @@ router.post('/todos', authenticateUser, async (req, res) => {
 router.get('/todos', authenticateUser, async (req, res) => {
     try {
         const todos = await prisma.todo.findMany({
-            where: { userId: req.userId }
+            where: { userId: req.userId },
+            orderBy:{createdAt:'asc'}
         });
 
         return res.status(200).json({ todos });
@@ -77,7 +78,8 @@ router.put('/todos/:id', authenticateUser, async (req, res) => {
             data: {
                 title: body.title || todo.title,
                 description:body.description || todo.description,
-                completed: body.completed ?? todo.completed 
+                completed: body.completed ?? todo.completed ,
+                updatedAt:new Date()
             }
         });
 
@@ -109,6 +111,26 @@ router.delete('/todos/:id', authenticateUser, async (req, res) => {
     } catch (error) {
         console.error(error);
         return res.status(500).json({ msg: "Internal server error" });
+    }
+});
+
+
+router.patch("/todos/toggle/:id",authenticateUser, async (req, res) => {
+    const {id}=req.params;
+    try {
+       
+        const todo = await prisma.todo.findUnique({
+            where: { id: parseInt(id) }
+        });
+      
+        if (!todo) {
+            return res.status(404).json({ message: "Todo not found" });
+        }
+        
+        todo.completed = !todo.completed; 
+        res.status(200).json({ todo });
+    } catch (error) {
+        res.status(500).json({ message: "Server error"});
     }
 });
 

@@ -12,8 +12,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "jwt_secret";
 
 const signupSchema = zod.object({
     username: zod.string().email(),
-    password: zod.string().min(6, "Password must be at least 6 characters"),
-    name: zod.string().min(2, "Name should be at least 2 characters")
+    password: zod.string().min(6, "Password must be at least 6 characters")
 });
 
 const signinSchema = zod.object({
