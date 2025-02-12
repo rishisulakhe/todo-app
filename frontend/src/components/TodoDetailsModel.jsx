@@ -1,20 +1,21 @@
-import { FaTimes, FaFile, FaDownload } from "react-icons/fa"; // Import icons for file and download
+/* eslint-disable react/prop-types */
+import { FaTimes, FaFile, FaDownload } from "react-icons/fa"; 
 import { useEffect, useState } from "react";
 import { BACKEND_URL } from "../config";
 const TodoDetailsModal = ({ isOpen, onClose, todo }) => {
-    const [isClosing, setIsClosing] = useState(false); // State for closing animation
+    const [isClosing, setIsClosing] = useState(false); 
 
     useEffect(() => {
         if (isOpen) {
-            setIsClosing(false); // Reset closing state when modal opens
+            setIsClosing(false); 
         }
     }, [isOpen]);
 
     const handleClose = () => {
-        setIsClosing(true); // Trigger closing animation
+        setIsClosing(true); 
         setTimeout(() => {
-            onClose(); // Close the modal after animation
-        }, 300); // Match the duration of the animation
+            onClose(); 
+        }, 300); 
     };
 
     if (!isOpen || !todo) return null;
@@ -22,15 +23,15 @@ const TodoDetailsModal = ({ isOpen, onClose, todo }) => {
     return (
         <div
             className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4"
-            onClick={handleClose} // Close modal on outside click
+            onClick={handleClose} 
         >
             <div
                 className={`bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl transform transition-all duration-300 ${
                     isClosing ? "scale-95 opacity-0" : "scale-100 opacity-100"
                 }`}
-                onClick={(e) => e.stopPropagation()} // Prevent click propagation inside modal
+                onClick={(e) => e.stopPropagation()} 
             >
-                {/* Modal Header */}
+              
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-2xl font-bold text-gray-800">{todo.title}</h2>
                     <button
@@ -41,13 +42,13 @@ const TodoDetailsModal = ({ isOpen, onClose, todo }) => {
                     </button>
                 </div>
 
-                {/* Description */}
+              
                 <div className="mb-6">
                     <h3 className="text-lg font-semibold text-gray-700 mb-2">Description</h3>
                     <p className="text-gray-600 whitespace-pre-wrap">{todo.description}</p>
                 </div>
 
-                {/* Files/Images */}
+           
                 {todo.files && todo.files.length > 0 && (
                     <div>
                         <h3 className="text-lg font-semibold text-gray-700 mb-2">Attachments</h3>

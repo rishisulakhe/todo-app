@@ -2,7 +2,6 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { BACKEND_URL } from "../../config";
 
-// Async thunk for handling signup and signin
 export const authUser = createAsyncThunk("auth/authUser", async ({ type, postInputs }, { rejectWithValue }) => {
     try {
         const response = await axios.post(`${BACKEND_URL}/api/v1/user/${type}`, {

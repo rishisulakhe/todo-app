@@ -1,9 +1,9 @@
 /* eslint-disable react/prop-types */
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { updateInputs, authUser } from "../redux/slices/authSlice"; // Import Redux actions
+import { updateInputs, authUser } from "../redux/slices/authSlice"; 
 import { useEffect } from "react";
-import { motion } from "framer-motion"; // Import Framer Motion for animations
+import { motion } from "framer-motion"; 
 
 export const Auth = ({ type }) => {
     const navigate = useNavigate();
@@ -31,9 +31,9 @@ export const Auth = ({ type }) => {
     return (
         <div className="h-screen flex justify-center items-center bg-gradient-to-r from-blue-50 to-purple-50">
             <motion.div
-                initial={{ opacity: 0, y: -50 }} // Initial animation state
-                animate={{ opacity: 1, y: 0 }} // Animate to this state
-                transition={{ duration: 0.5 }} // Animation duration
+                initial={{ opacity: 0, y: -50 }} 
+                animate={{ opacity: 1, y: 0 }} 
+                transition={{ duration: 0.5 }} 
                 className="card w-96 bg-white shadow-2xl rounded-lg p-8"
             >
                 <div className="text-3xl font-bold text-center mb-6 text-gray-800">
@@ -78,8 +78,8 @@ export const Auth = ({ type }) => {
                         onChange={(e) => handleInputChange("password", e.target.value)}
                     />
                     <motion.button
-                        whileHover={{ scale: 1.05 }} // Button hover animation
-                        whileTap={{ scale: 0.95 }} // Button click animation
+                        whileHover={{ scale: 1.05 }} 
+                        whileTap={{ scale: 0.95 }} 
                         onClick={handleSubmit}
                         type="button"
                         className={`btn w-full p-3 bg-blue-600 text-white hover:bg-blue-700 transition duration-200 ${

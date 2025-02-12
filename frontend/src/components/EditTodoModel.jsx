@@ -1,71 +1,69 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { addTodo } from "../redux/slices/todoSlice";
+import { useState, useEffect } from "react";
 
-const AddTodoModal = ({ isOpen, onClose }) => {
-    const dispatch = useDispatch();
-    const [title, setTitle] = useState("");
-    const [description, setDescription] = useState("");
-    const [files, setFiles] = useState([]); 
+const EditTodoModal = ({ isOpen, onClose, todo, onUpdateTodo }) => {
+    const [title, setTitle] = useState(todo?.title || "");
+    const [description, setDescription] = useState(todo?.description || "");
+    const [files, setFiles] = useState([]);
+
+    useEffect(() => {
+        if (todo) {
+            setTitle(todo.title || "");
+            setDescription(todo.description || "");
+            setFiles(todo.files ? [...todo.files] : []); 
+        }
+    }, [todo]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (title.length < 3) return;
+        if (title.trim().length < 3) return;
 
-        dispatch(addTodo({ title, description, files }))
-            .then(() => {
-                setTitle("");
-                setDescription("");
-                setFiles([]); 
-                onClose();
-            });
+        if (!todo?.id) {
+            console.error("Error: Todo ID is missing!");
+            return;
+        }
+
+        onUpdateTodo(todo.id, title, description, files);
+        onClose();
     };
 
     const handleFileChange = (e) => {
-        const selectedFiles = Array.from(e.target.files); 
-        setFiles(selectedFiles); 
+        const selectedFiles = Array.from(e.target.files);
+        setFiles(selectedFiles);
     };
 
-    if (!isOpen) return null;
+    if (!isOpen || !todo) return null;
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
             <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-                <h2 className="text-2xl font-bold mb-4 text-gray-800">Add New Todo</h2>
+                <h2 className="text-2xl font-bold mb-4 text-gray-800">Edit Todo</h2>
                 <form onSubmit={handleSubmit}>
-                 
                     <input
                         type="text"
                         placeholder="Title (min 3 chars)"
-                        value={title}
+                        value={title ?? ""}
                         onChange={(e) => setTitle(e.target.value)}
                         className="w-full p-2 border rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         required
                     />
-
-                  
                     <textarea
                         placeholder="Description"
-                        value={description}
+                        value={description ?? ""}
                         onChange={(e) => setDescription(e.target.value)}
                         className="w-full p-2 border rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
-
-               
                     <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Upload Files or Images
+                            Upload New Files or Images
                         </label>
                         <input
                             type="file"
-                            multiple 
+                            multiple
                             onChange={handleFileChange}
                             className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
-
-                
                     <div className="flex justify-end">
                         <button
                             type="button"
@@ -78,7 +76,7 @@ const AddTodoModal = ({ isOpen, onClose }) => {
                             type="submit"
                             className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200"
                         >
-                            Add Todo
+                            Update Todo
                         </button>
                     </div>
                 </form>
@@ -87,4 +85,4 @@ const AddTodoModal = ({ isOpen, onClose }) => {
     );
 };
 
-export default AddTodoModal;
+export default EditTodoModal;
