@@ -119,15 +119,22 @@ router.delete('/todos/:id', authenticateUser, async (req, res) => {
     const { id } = req.params;
 
     try {
-        
+       
         const todo = await prisma.todo.findUnique({
-            where: { id: parseInt(id) }
+            where: { id: parseInt(id) },
+            include: { files: true } 
         });
 
         if (!todo || todo.userId !== req.userId) {
             return res.status(403).json({ msg: "Todo not found or unauthorized" });
         }
 
+      
+        await prisma.file.deleteMany({
+            where: { todoId: parseInt(id) }
+        });
+
+        
         await prisma.todo.delete({
             where: { id: parseInt(id) }
         });
@@ -138,6 +145,7 @@ router.delete('/todos/:id', authenticateUser, async (req, res) => {
         return res.status(500).json({ msg: "Internal server error" });
     }
 });
+
 
 
 router.patch("/todos/toggle/:id",authenticateUser, async (req, res) => {
