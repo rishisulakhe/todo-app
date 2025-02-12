@@ -54,7 +54,7 @@ const handleUpdateTodo = (id, title, description, files) => {
     const [name, setName] = useState(localStorage.getItem("name") || "User");
 
     useEffect(() => {
-        setName(localStorage.getItem("name") || "Bro");
+        setName(localStorage.getItem("name") || "User");
     }, []);
 
     return (
@@ -99,7 +99,7 @@ const handleUpdateTodo = (id, title, description, files) => {
                         {todos.map((todo) => (
                         <li
                          key={todo.id}
-                         onClick={() => handleTodoClick(todo)} // Open details modal on click
+                         onClick={() => handleTodoClick(todo)} 
                          className="p-6 bg-white rounded-lg shadow-md mb-4 hover:shadow-lg transition-shadow duration-200 flex justify-between items-center cursor-pointer"
                            >
                        <div>
@@ -112,16 +112,16 @@ const handleUpdateTodo = (id, title, description, files) => {
                        <div className="flex items-center gap-4">
                          <button
                           onClick={(e) => {
-                           e.stopPropagation(); // Prevent modal from opening
-                           handleEditTodo(todo); // Open edit modal
+                           e.stopPropagation(); 
+                           handleEditTodo(todo); 
                            }}
                         className="text-gray-400 hover:text-blue-500 transition duration-200"
                          >
-                       <FaEdit className="w-5 h-5" /> {/* Edit icon */}
+                       <FaEdit className="w-5 h-5" />
                   </button>
             <button
                 onClick={(e) => {
-                    e.stopPropagation(); // Prevent modal from opening
+                    e.stopPropagation(); 
                     handleToggleTodo(todo.id);
                 }}
                 className="text-gray-400 hover:text-green-500 transition duration-200"
@@ -134,7 +134,7 @@ const handleUpdateTodo = (id, title, description, files) => {
             </button>
             <button
                 onClick={(e) => {
-                    e.stopPropagation(); // Prevent modal from opening
+                    e.stopPropagation(); 
                     handleDeleteTodo(todo.id);
                 }}
                 className="text-red-500 hover:text-red-700 transition duration-200"
